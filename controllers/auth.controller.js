@@ -1,4 +1,4 @@
-const Account = require('../models/authentication')
+const User = require('../models/user.model')
 
 exports.register = async (req , res) => {
 	
