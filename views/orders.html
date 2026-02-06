@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders | Cafeteria</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="orders.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Cafeteria</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Menu</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="orders.html" class="active">My Orders</a></li>
+                <li><a href="auth.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Order Tracking</h2>
+        <div class="orders-list">
+            <div class="order-card active-order">
+                <div class="order-header">
+                    <span>Order #5521</span>
+                    <span class="status-badge preparing">Preparing</span>
+                </div>
+                <div class="order-body">
+                    <p>1x Latte, 1x Croissant</p>
+                    <small>Type: Pickup</small>
+                </div>
+                <div class="status-timeline">
+                    <div class="step completed">Pending</div>
+                    <div class="step current">Preparing</div>
+                    <div class="step">Ready</div>
+                    <div class="step">Completed</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
