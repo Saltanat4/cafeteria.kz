@@ -10,7 +10,7 @@ const productRoutes = require('./routes/productRoutes')
 const cartRoutes = require('./routes/cartRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 const adminRoutes = require('./routes/adminRoutes')
-
+const pageRoutes = require('./routes/pageRoutes')
 
 const PORT = process.env.PORT || 3000
 
@@ -23,10 +23,7 @@ app.use('/products' , productRoutes)
 app.use('/cart' , cartRoutes)
 app.use('/orders' , orderRoutes)
 app.use('/admin' , adminRoutes)
-
-app.get('/' , (req , res) => {
-	res.sendFile(path.join(__dirname , 'views' , 'index.html'));
-})
+app.use('/' , pageRoutes)
 
 connectDB()
 

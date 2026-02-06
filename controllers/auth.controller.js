@@ -18,6 +18,18 @@ exports.register = async (req, res) => {
 		return res.status(400).json({ message: 'username, email, password required' })
 		}
 
+		if (!isValidEmail(email)) {
+			return res.status(400).json({
+				message: 'Invalid email format'
+			})
+		}
+
+		if (!isValidPassword(password)) {
+			return res.status(400).json({
+				message: 'Password must be at least 8 characters and contain at least one letter'
+			})
+		}
+
 		const exists = await User.findOne({ email })
 		if (exists) {
 		return res.status(409).json({ message: 'Email already used' })
@@ -26,10 +38,10 @@ exports.register = async (req, res) => {
 		const hashed = await bcrypt.hash(password, 10)
 
 		const user = await User.create({
-		username,
-		email,
-		password: hashed,
-		role: 'user'
+			username,
+			email,
+			password: hashed,
+			role: 'user'
 		})
 
 		const token = signToken(user)
@@ -55,6 +67,18 @@ exports.login = async (req, res) => {
 
 		if (!email || !password) {
 		return res.status(400).json({ message: 'email, password required' })
+		}
+
+		if (!isValidEmail(email)) {
+			return res.status(400).json({
+				message: 'Invalid email format'
+			})
+		}
+
+		if (!isValidPassword(password)) {
+			return res.status(400).json({
+				message: 'Password must be at least 8 characters and contain at least one letter'
+			})
 		}
 
 		const user = await User.findOne({ email })
@@ -95,4 +119,18 @@ exports.getInfo = async (req, res) => {
 		console.error(error)
 		return res.status(500).json({ message: error.message })
 	}
+}
+
+
+const isValidEmail = (email) => {
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+	return emailRegex.test(email)
+}
+
+const isValidPassword = (password) => {
+	if (typeof password !== 'string') return false;
+	if (password.length < 8) return false;
+	if (!/[a-zA-Z]/.test(password)) return false;
+
+	return true
 }
