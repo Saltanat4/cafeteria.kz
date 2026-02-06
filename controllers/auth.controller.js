@@ -80,7 +80,7 @@ exports.login = async (req, res) => {
 				message: 'Password must be at least 8 characters and contain at least one letter'
 			})
 		}
-		
+
 		const user = await User.findOne({ email })
 		if (!user) {
 		return res.status(401).json({ message: 'Invalid credentials' })
@@ -130,7 +130,7 @@ const isValidEmail = (email) => {
 const isValidPassword = (password) => {
 	if (typeof password !== 'string') return false;
 	if (password.length < 8) return false;
-	if (/[a-zA-Z]/.test(password)) return false;
+	if (!/[a-zA-Z]/.test(password)) return false;
 
 	return true
 }
