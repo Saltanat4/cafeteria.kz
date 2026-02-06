@@ -1,14 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Cafeteria</title>
-	<link rel="stylesheet" href="/css/style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria - Coffee Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-	<h1>Welcome to Cafeteria</h1>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">Cafeteria</div>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search menu...">
+                <button><i class="fas fa-search"></i></button>
+			</div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Menu</a></li>
+                <li><a href="auth.html">Login</a></li>
+                <li class="cart-container">
+                    <a href="cart.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Espresso</button>
+        <button class="filter-btn">Latte</button>
+        <button class="filter-btn">Cappuccino</button>
+        <button class="filter-btn">Pastry</button>
+    </section>
+
+    <main class="container">
+        <div class="product-grid" id="menu-container">
+            <div class="product-card">
+                <img src="https://via.placeholder.com/300x200" alt="Coffee Image">
+                <div class="card-content">
+                    <span class="category-label">Espresso</span>
+                    <h3>Double Espresso</h3>
+                    <p>Rich and bold concentrated coffee shot.</p>
+                    <div class="card-footer">
+                        <span class="price">850tg</span>
+                        <button class="add-btn">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Cafeteria | Created by Erkhan P., Saltanat B., and Shinaray N.</p>
+    </footer>
 </body>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<script src="/scripts/script.js"></script>
