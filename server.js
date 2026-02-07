@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path');
+const cors =require('cors');
 const app = express()
 const connectDB = require('./config/db.config')
 
@@ -14,8 +15,12 @@ const pageRoutes = require('./routes/pageRoutes')
 
 const PORT = process.env.PORT || 3000
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 app.use(express.json()); 
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 app.use('/auth' , authenticationRoutes)
 app.use('/user' , userRoutes)

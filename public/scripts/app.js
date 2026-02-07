@@ -1,42 +1,116 @@
 
 const menuContainer = document.getElementById('menu-container');
+const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+let allProducts = []; 
+
 
 async function fetchProducts() {
     try {
-        const response = await fetch('/lists'); 
-        const products = await response.json();
+        const response = await fetch('/products');
         
-        displayMenuItems(products);
-        setupFilters(products);
-    } catch (error) {
-        console.error("Error fetching products:", error);
-        menuContainer.innerHTML = "<p>Coffee is brewing... please refresh in a moment!</p>";
+        if (!response.ok) throw new Error(`Server status: ${response.status}`);
+        allProducts = await response.json();
+        
+        if (!allProducts || allProducts.length === 0) {
+            menuContainer.innerHTML = "<p>The menu is loading..</p>";
+            return;
+        }
+
+        renderMenu(allProducts);
+        setupEventListeners(); 
+    } catch (err) {
+        console.error("Fetch Error:", err);
+        menuContainer.innerHTML = "<p>Error loading menu. Please try again later.</p>";
     }
 }
 
 
-function displayMenuItems(menuList) {
-    if (menuList.length < 1) {
-        menuContainer.innerHTML = "<h3>No items match your search.</h3>";
+function renderMenu(products) {
+    if (products.length === 0) {
+        menuContainer.innerHTML = "<p>No matches found for your search</p>";
         return;
     }
-    
-    let displayMenu = menuList.map((item) => {
-        return `
-            <div class="product-card">
-                <img src="${item.image_url}" alt="${item.name}">
-                <div class="card-content">
-                    <span class="category-label">${item.category}</span>
-                    <h3>${item.name}</h3>
-                    <div class="card-footer">
-                        <span class="price">$${item.price}</span>
-                        <button class="add-btn" onclick="addToCart('${item._id}')">Add to Cart</button>
-                    </div>
-                </div>
-            </div>`;
-    }).join("");
-    menuContainer.innerHTML = displayMenu;
+
+    menuContainer.innerHTML = products.map(item => `
+        <div class="product-card">
+            <div class="product-image">
+                <img src="${item.image_url || '/images/default-coffee.jpg'}" alt="${item.name}">
+            </div>
+            <div class="card-content">
+                <span class="category-tag">${item.category}</span>
+                <h3>${item.name}</h3>
+                <p class="price">${item.price.toLocaleString()} ₸</p>
+                <button class="add-btn" onclick="addToCart('${item._id}')">
+                    <i class="fas fa-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+    `).join('');
 }
 
 
-window.addEventListener('DOMContentLoaded', fetchProducts);
+function handleFilterAndSearch() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const activeBtn = document.querySelector('.filter-btn.active');
+    const activeCategory = activeBtn ? activeBtn.getAttribute('data-category') : 'all';
+
+    const filtered = allProducts.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+        const matchesCategory = (activeCategory === 'all') || 
+                                (product.category.toLowerCase() === activeCategory.toLowerCase());
+        
+        return matchesSearch && matchesCategory;
+    });
+
+    renderMenu(filtered);
+}
+
+
+function setupEventListeners() {
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            handleFilterAndSearch();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', handleFilterAndSearch);
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleFilterAndSearch();
+        });
+    }
+}
+
+async function addToCart(productId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("Please login first!");
+        window.location.href = '/auth';
+        return;
+    }
+
+    try {
+        const response = await fetch('/cart', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ productId, quantity: 1 })
+        });
+        if (response.ok) alert("Added to cart!");
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', fetchProducts);
