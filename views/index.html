@@ -9,309 +9,259 @@
 </head>
 <body>
 
-    <header>
-        <nav class="navbar">
-            <div class="logo">Cafeteria</div>
-            
-            <div class="search-bar">
-                <input type="text" placeholder="Search menu...">
-                <button><i class="fas fa-search"></i></button>
-			</div>
+<header>
+    <nav class="navbar">
+        <div class="logo">Cafeteria</div>
 
-            <ul class="nav-links">
-                <li><a href="index.html">Menu</a></li>
-                <li><a href="auth.html">Login</a></li>
-                <li class="cart-container">
-                    <a href="cart.html">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span id="cart-count">0</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+        <div class="search-bar">
+            <input type="text" placeholder="Search menu...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
 
-    <section class="filters">
-        <button class="filter-btn active">All</button>
-        <button class="filter-btn">Espresso</button>
-        <button class="filter-btn">Latte</button>
-        <button class="filter-btn">Cappuccino</button>
-        <button class="filter-btn">Pastry</button>
-    </section>
+        <ul class="nav-links">
+            <li><a href="index.html">Menu</a></li>
+            <li><a href="auth.html">Login</a></li>
+            <li class="cart-container">
+                <a href="cart.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
 
-<!--here only espresso products-->
-    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/double espresso.jpg" alt="Double espresso">
-                <div class="card-content">
-                    <span class="category-label">Espresso</span>
-                    <h3>Double Espresso</h3>
-                    <p>Rich and bold concentrated coffee shots</p>
-                    <div class="card-footer">
-                        <span class="price">850tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+<section class="filters">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Espresso</button>
+    <button class="filter-btn">Latte</button>
+    <button class="filter-btn">Cappuccino</button>
+    <button class="filter-btn">Pastry</button>
+</section>
 
-	   <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/espresso.jpg" alt="Espresso">
-                <div class="card-content">
-                    <span class="category-label">Espresso</span>
-                    <h3>Espresso</h3>
-                    <p>Rich concentrated coffee shot</p>
-                    <div class="card-footer">
-                        <span class="price">650tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+<main class="container">
+    <div class="product-grid" id="menu-container">
 
-	   <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/chocolate expresso martini.jpg" alt="Chocolate Espresso Martini">
-                <div class="card-content">
-                    <span class="category-label">Espresso</span>
-                    <h3>Chocolate Espresso Martini</h3>
-                    <p>A rich and indulgent blend of espresso, chocolate, and smooth vodka for a bold, dessert-style cocktail</p>
-                    <div class="card-footer">
-                        <span class="price">1650tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
+        <!-- Espresso -->
+        <div class="product-card">
+            <img src="/images/double espresso.jpg" alt="Double espresso">
+            <div class="card-content">
+                <span class="category-label">Espresso</span>
+                <h3>Double Espresso</h3>
+                <p>Rich and bold concentrated coffee shots</p>
+                <div class="card-footer">
+                    <span class="price">850tg</span>
+                    <button class="add-btn">Add to Cart</button>
                 </div>
             </div>
         </div>
-    </main>
 
-	<main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/espresso tonic.jpg" alt="Espresso Tonic">
-                <div class="card-content">
-                    <span class="category-label">Espresso</span>
-                    <h3>Espresso Tonic</h3>
-                    <p>A refreshing mix of bold espresso and crisp tonic water with a bright, bubbly finish</p>
-                    <div class="card-footer">
-                        <span class="price">1350tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
+        <div class="product-card">
+            <img src="/images/espresso.jpg" alt="Espresso">
+            <div class="card-content">
+                <span class="category-label">Espresso</span>
+                <h3>Espresso</h3>
+                <p>Rich concentrated coffee shot</p>
+                <div class="card-footer">
+                    <span class="price">650tg</span>
+                    <button class="add-btn">Add to Cart</button>
                 </div>
             </div>
         </div>
-    </main>
-<!--here latte products-->
-    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/latte.jpg" alt="Latte">
-                <div class="card-content">
-                    <span class="category-label">Latte</span>
-                    <h3>Latte</h3>
-                    <p>Smooth espresso with creamy steamed milk for a classic, mellow coffee</p>
-                    <div class="card-footer">
-                        <span class="price">1050tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-	    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/iced latte.jpg" alt="Iced Latte">
-                <div class="card-content">
-                    <span class="category-label">Latte</span>
-                    <h3>Iced Latte</h3>
-                    <p>Chilled espresso with cold milk over ice for a smooth, refreshing sip</p>
-                    <div class="card-footer">
-                        <span class="price">1150tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-	    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/mocha latte.jpg" alt="Macchiato">
-                <div class="card-content">
-                    <span class="category-label">Latte</span>
-                    <h3>Macchiato Latte</h3>
-                    <p>Espresso blended with rich chocolate and milk for a sweet, coffee-chocolate combo</p>
-                    <div class="card-footer">
-                        <span class="price">1350tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    </main>
-	    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/matcha latte.jpg" alt="Matcha Latte">
-                <div class="card-content">
-                    <span class="category-label">Latte</span>
-                    <h3>Matcha Latte</h3>
-                    <p>Earthy matcha green tea whisked with milk for a smooth, calming boost</p>
-                    <div class="card-footer">
-                        <span class="price">1250tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-<!--here only cappucino products-->
-    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/cappuccino.jpg" alt="Cappuccino">
-                <div class="card-content">
-                    <span class="category-label">Cappuccino</span>
-                    <h3>Cappuccino</h3>
-                    <p>A balanced coffee with rich espresso, steamed milk, and a thick, airy foam on top</p>
-                    <div class="card-footer">
-                        <span class="price">1150tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-	<main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/flatwhite.jpg" alt="Flat White">
-                <div class="card-content">
-                    <span class="category-label">Cappuccino</span>
-                    <h3>Flat White</h3>
-                    <p>A smooth and velvety coffee with a higher espresso-to-milk ratio and silky microfoam</p>
-                    <div class="card-footer">
-                        <span class="price">1350tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/affogatto.jpg" alt="Affogato">
-                <div class="card-content">
-                    <span class="category-label">Cappuccino</span>
-                    <h3>Affogato</h3>
-                    <p>A simple Italian dessert of hot espresso poured over cold vanilla ice cream</p>
-                    <div class="card-footer">
-                        <span class="price">1550tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/raf.jpg" alt="Raf cappuccino">
-                <div class="card-content">
-                    <span class="category-label">Cappuccino</span>
-                    <h3>Raf cappuccino</h3>
-                    <p>A creamy and lightly sweet coffee made with espresso, vanilla sugar, and warm cream</p>
-                    <div class="card-footer">
-                        <span class="price">1450tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-<!--here the pastries-->
-    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/tiramisu.jpg" alt="Tiramisu">
-                <div class="card-content">
-                    <span class="category-label">Pastry</span>
-                    <h3>Tiramisu</h3>
-                    <p>A classic Italian dessert with coffee-soaked sponge layers and creamy mascarpone, lightly dusted with cocoa</p>
-                    <div class="card-footer">
-                        <span class="price">1450tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-	<main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/cinnamon rolls.jpg" alt="Cinnamon rolls">
-                <div class="card-content">
-                    <span class="category-label">Pastry</span>
-                    <h3>Cinnamon rolls</h3>
-                    <p>Warm, soft rolls swirled with cinnamon sugar and topped with sweet glaze or cream</p>
-                    <div class="card-footer">
-                        <span class="price">1450tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/macarons.jpg" alt="Macarons">
-                <div class="card-content">
-                    <span class="category-label">Pastry</span>
-                    <h3>Macarons</h3>
-                    <p>Delicate French almond cookies with a crisp shell and creamy filling in the middle</p>
-                    <div class="card-footer">
-                        <span class="price">1550tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-     <main class="container">
-        <div class="product-grid" id="menu-container">
-            <div class="product-card">
-                <img src="/public/images/cakes.jpg" alt="Cakes">
-                <div class="card-content">
-                    <span class="category-label">Pastry</span>
-                    <h3>Cakes</h3>
-                    <p>Soft and layered desserts with rich cream or chocolate, perfect for a sweet treat with coffee</p>
-                    <div class="card-footer">
-                        <span class="price">1250tg</span>
-                        <button class="add-btn">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
 
+        <div class="product-card">
+            <img src="/images/chocolate expresso martini.jpg" alt="Chocolate Espresso Martini">
+            <div class="card-content">
+                <span class="category-label">Espresso</span>
+                <h3>Chocolate Espresso Martini</h3>
+                <p>A rich and indulgent blend of espresso, chocolate, and smooth vodka for a bold, dessert-style cocktail</p>
+                <div class="card-footer">
+                    <span class="price">1650tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
 
+        <div class="product-card">
+            <img src="/images/espresso tonic.jpg" alt="Espresso Tonic">
+            <div class="card-content">
+                <span class="category-label">Espresso</span>
+                <h3>Espresso Tonic</h3>
+                <p>A refreshing mix of bold espresso and crisp tonic water with a bright, bubbly finish</p>
+                <div class="card-footer">
+                    <span class="price">1350tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
 
+        <!-- Latte -->
+        <div class="product-card">
+            <img src="/images/latte.jpg" alt="Latte">
+            <div class="card-content">
+                <span class="category-label">Latte</span>
+                <h3>Latte</h3>
+                <p>Smooth espresso with creamy steamed milk for a classic, mellow coffee</p>
+                <div class="card-footer">
+                    <span class="price">1050tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
 
+        <div class="product-card">
+            <img src="/images/iced latte.jpg" alt="Iced Latte">
+            <div class="card-content">
+                <span class="category-label">Latte</span>
+                <h3>Iced Latte</h3>
+                <p>Chilled espresso with cold milk over ice for a smooth, refreshing sip</p>
+                <div class="card-footer">
+                    <span class="price">1150tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
 
-    <footer>
-        <p>&copy; 2026 Cafeteria | Created by Erkhan P., Saltanat B., and Shinaray N.</p>
-    </footer>
+        <div class="product-card">
+            <img src="/images/mocha latte.jpg" alt="Macchiato">
+            <div class="card-content">
+                <span class="category-label">Latte</span>
+                <h3>Macchiato Latte</h3>
+                <p>Espresso blended with rich chocolate and milk for a sweet, coffee-chocolate combo</p>
+                <div class="card-footer">
+                    <span class="price">1350tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/matcha latte.jpg" alt="Matcha Latte">
+            <div class="card-content">
+                <span class="category-label">Latte</span>
+                <h3>Matcha Latte</h3>
+                <p>Earthy matcha green tea whisked with milk for a smooth, calming boost</p>
+                <div class="card-footer">
+                    <span class="price">1250tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cappuccino -->
+        <div class="product-card">
+            <img src="/images/cappuccino.jpg" alt="Cappuccino">
+            <div class="card-content">
+                <span class="category-label">Cappuccino</span>
+                <h3>Cappuccino</h3>
+                <p>A balanced coffee with rich espresso, steamed milk, and a thick, airy foam on top</p>
+                <div class="card-footer">
+                    <span class="price">1150tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/flatwhite.jpg" alt="Flat White">
+            <div class="card-content">
+                <span class="category-label">Cappuccino</span>
+                <h3>Flat White</h3>
+                <p>A smooth and velvety coffee with a higher espresso-to-milk ratio and silky microfoam</p>
+                <div class="card-footer">
+                    <span class="price">1350tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/affogatto.jpg" alt="Affogato">
+            <div class="card-content">
+                <span class="category-label">Cappuccino</span>
+                <h3>Affogato</h3>
+                <p>A simple Italian dessert of hot espresso poured over cold vanilla ice cream</p>
+                <div class="card-footer">
+                    <span class="price">1550tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/raf.jpg" alt="Raf cappuccino">
+            <div class="card-content">
+                <span class="category-label">Cappuccino</span>
+                <h3>Raf cappuccino</h3>
+                <p>A creamy and lightly sweet coffee made with espresso, vanilla sugar, and warm cream</p>
+                <div class="card-footer">
+                    <span class="price">1450tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pastry -->
+        <div class="product-card">
+            <img src="/images/tiramisu.jpg" alt="Tiramisu">
+            <div class="card-content">
+                <span class="category-label">Pastry</span>
+                <h3>Tiramisu</h3>
+                <p>A classic Italian dessert with coffee-soaked sponge layers and creamy mascarpone, lightly dusted with cocoa</p>
+                <div class="card-footer">
+                    <span class="price">1450tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/cinnamon rolls.jpg" alt="Cinnamon rolls">
+            <div class="card-content">
+                <span class="category-label">Pastry</span>
+                <h3>Cinnamon rolls</h3>
+                <p>Warm, soft rolls swirled with cinnamon sugar and topped with sweet glaze or cream</p>
+                <div class="card-footer">
+                    <span class="price">1450tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/macarons.jpg" alt="Macarons">
+            <div class="card-content">
+                <span class="category-label">Pastry</span>
+                <h3>Macarons</h3>
+                <p>Delicate French almond cookies with a crisp shell and creamy filling in the middle</p>
+                <div class="card-footer">
+                    <span class="price">1550tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <img src="/images/cakes.jpg" alt="Cakes">
+            <div class="card-content">
+                <span class="category-label">Pastry</span>
+                <h3>Cakes</h3>
+                <p>Soft and layered desserts with rich cream or chocolate, perfect for a sweet treat with coffee</p>
+                <div class="card-footer">
+                    <span class="price">1250tg</span>
+                    <button class="add-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2026 Cafeteria | Created by Erkhan P., Saltanat B., and Shinaray N.</p>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/scripts/script.js"></script>
 </body>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="/scripts/script.js"></script>
 </html>
