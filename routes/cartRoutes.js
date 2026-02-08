@@ -9,6 +9,4 @@ router.put('/:id', auth, controller.updateItemQuantity);
 router.delete('/:id', auth, controller.removeItem);
 router.delete('/', auth, controller.clearCart);
 
-
-
 module.exports = router
