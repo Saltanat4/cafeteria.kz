@@ -1,55 +1,136 @@
-const cartContainer = document.getElementById('cart-items-container');
+document.addEventListener('DOMContentLoaded', () => {
+    fetchCartItems();
+});
 
-async function loadCart() {
+// 1. Загрузка списка товаров (Маршрут: GET /cart/list)
+async function fetchCartItems() {
     const token = localStorage.getItem('token');
-    if (!token) return;
-
-    const res = await fetch('/cart/list', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const items = await res.json();
-    renderCart(items);
-}
-
-function renderCart(items) {
-    let subtotal = 0;
-    if (items.length === 0) {
-        cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+    if (!token) {
+        window.location.href = '/auth';
         return;
     }
 
-    cartContainer.innerHTML = items.map(item => {
-        const lineTotal = item.productId.price * item.quantity;
-        subtotal += lineTotal;
-        return `
-        <div class="cart-item-card">
-            <img src="${item.productId.image_url}" alt="Product">
-            <div class="item-details">
-                <h3>${item.productId.name}</h3>
-                <p class="unit-price">${item.productId.price} ₸</p>
-            </div>
-            <div class="quantity-picker">
-                <span>Qty: ${item.quantity}</span>
-            </div>
-            <div class="item-subtotal">${lineTotal} ₸</div>
-        </div>`;
-    }).join('');
+    try {
+        const response = await fetch('/cart/list', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-    document.getElementById('subtotal-amount').innerText = `${subtotal} ₸`;
-    document.getElementById('total-amount').innerText = `${subtotal} ₸`;
+        if (response.ok) {
+            const items = await response.json();
+            renderCart(items);
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
 }
 
-document.getElementById('checkout-btn').addEventListener('click', async () => {
+// 2. Отрисовка корзины в HTML
+function renderCart(items) {
+    const cartContainer = document.getElementById('cart-items-container');
+    const totalElement = document.getElementById('total-amount');
+    const subtotalElement = document.getElementById('subtotal-amount');
+    
+    if (!cartContainer || !totalElement) return;
+
+    if (!items || items.length === 0) {
+        cartContainer.innerHTML = '<p class="empty-msg">Your cart is empty.</p>';
+        totalElement.innerText = "0 ₸";
+        if (subtotalElement) subtotalElement.innerText = "0 ₸";
+        return;
+    }
+
+    let grandTotal = 0;
+    cartContainer.innerHTML = items.map(item => {
+        if (!item.product) return ''; 
+        const itemTotal = item.product.price * item.quantity;
+        grandTotal += itemTotal;
+
+        return `
+            <div class="cart-item">
+                <img src="${item.product.image_url}" alt="${item.product.name}">
+                <div class="item-info">
+                    <h4>${item.product.name}</h4>
+                    <p>${item.product.price} ₸</p>
+                </div>
+                <div class="quantity-controls">
+                    <button onclick="updateQuantity('${item._id}', ${item.quantity - 1})">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="updateQuantity('${item._id}', ${item.quantity + 1})">+</button>
+                </div>
+                <p class="item-total">${itemTotal} ₸</p>
+                <button class="delete-btn" onclick="removeItem('${item._id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>`;
+    }).join('');
+
+    totalElement.innerText = `${grandTotal} ₸`;
+    if (subtotalElement) subtotalElement.innerText = `${grandTotal} ₸`;
+}
+
+// 3. Удаление товара (Маршрут: DELETE /cart/:id)
+async function removeItem(itemId) {
+    if (!confirm("Remove this item?")) return;
     const token = localStorage.getItem('token');
-    const res = await fetch('/api/orders', {
-        method: 'POST',
+    const response = await fetch(`/cart/${itemId}`, {
+        method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (response.ok) fetchCartItems();
+}
 
-    if (res.ok) {
-        alert("Order placed! Head to 'My Orders' to track it.");
-        window.location.href = '/orders.html';
+// 4. Обновление количества (Маршрут: PUT /cart/:id)
+async function updateQuantity(itemId, newQuantity) {
+    if (newQuantity < 1) return;
+    const token = localStorage.getItem('token');
+    const response = await fetch(`/cart/${itemId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ quantity: newQuantity })
+    });
+    if (response.ok) fetchCartItems();
+}
+
+// 5. Очистка всей корзины (Маршрут: DELETE /cart/)
+async function clearCart() {
+    if (!confirm("Clear your cart?")) return;
+    const token = localStorage.getItem('token');
+    const response = await fetch('/cart/', {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) fetchCartItems();
+}
+
+async function placeOrder() {
+    const token = localStorage.getItem('token');
+    const orderType = document.getElementById('order-type').value;
+    const notes = document.getElementById('order-notes').value;
+
+    try {
+        const res = await fetch('/orders/', { // Убедись, что путь совпадает с app.use в server.js
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+                order_type: orderType, 
+                notes: notes 
+            })
+        });
+
+        if (res.ok) {
+            alert("Order placed successfully! ☕");
+            window.location.href = '/orders'; // Перенаправляем на страницу истории заказов
+        } else {
+            const err = await res.json();
+            alert(err.message || "Failed to place order");
+        }
+    } catch (err) {
+        console.error("Checkout error:", err);
     }
-});
-
-document.addEventListener('DOMContentLoaded', loadCart);
+}

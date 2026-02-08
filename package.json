@@ -7,6 +7,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.6",
+    "node.js": "^0.0.1-security",
     "nodemon": "^3.1.11"
   },
   "name": "cafeteria.kz",
