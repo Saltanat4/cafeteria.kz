@@ -87,7 +87,7 @@ const products = [
         price: 1350,
         description:"Espresso blended with rich chocolate and milk for a sweet, coffee-chocolate combo",
         category: "latte",
-        image_url: "images/mocha_latte.jpg6 "
+        image_url: "images/mocha_latte.jpg"
     },
     { 
         name: "Tiramisu", 

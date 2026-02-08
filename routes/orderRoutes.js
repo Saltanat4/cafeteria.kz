@@ -10,5 +10,4 @@ router.get('/:id' , auth , controller.getOrderByID)
 router.post('/' , auth , controller.createOrder)
 router.put('/:id' , auth , isAdmin , controller.updateOrder)
 
-
 module.exports = router
