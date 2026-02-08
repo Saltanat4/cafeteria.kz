@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
+const { isValidEmail, isValidPassword } = require('../validators')
 
 const signToken = (user) => {
 	return jwt.sign(
@@ -119,18 +120,4 @@ exports.getInfo = async (req, res) => {
 		console.error(error)
 		return res.status(500).json({ message: error.message })
 	}
-}
-
-
-const isValidEmail = (email) => {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-	return emailRegex.test(email)
-}
-
-const isValidPassword = (password) => {
-	if (typeof password !== 'string') return false;
-	if (password.length < 8) return false;
-	if (!/[a-zA-Z]/.test(password)) return false;
-
-	return true
 }

@@ -12,12 +12,14 @@ const userSchema = new mongoose.Schema(
 		type: String,
 		required: true,
 		unique: true,
-		lowercase: true
+		lowercase: true,
+		match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 		},
 
 		password: {
 		type: String,
-		required: true
+		required: true,
+		minlength: 8
 		},
 
 		role: {
