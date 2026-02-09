@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchCartItems();
 });
 
-// 1. Загрузка списка товаров (Маршрут: GET /cart/list)
 async function fetchCartItems() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -24,7 +23,6 @@ async function fetchCartItems() {
     }
 }
 
-// 2. Отрисовка корзины в HTML
 function renderCart(items) {
     const cartContainer = document.getElementById('cart-items-container');
     const totalElement = document.getElementById('total-amount');
@@ -68,7 +66,6 @@ function renderCart(items) {
     if (subtotalElement) subtotalElement.innerText = `${grandTotal} ₸`;
 }
 
-// 3. Удаление товара (Маршрут: DELETE /cart/:id)
 async function removeItem(itemId) {
     if (!confirm("Remove this item?")) return;
     const token = localStorage.getItem('token');
@@ -79,7 +76,6 @@ async function removeItem(itemId) {
     if (response.ok) fetchCartItems();
 }
 
-// 4. Обновление количества (Маршрут: PUT /cart/:id)
 async function updateQuantity(itemId, newQuantity) {
     if (newQuantity < 1) return;
     const token = localStorage.getItem('token');
@@ -94,7 +90,6 @@ async function updateQuantity(itemId, newQuantity) {
     if (response.ok) fetchCartItems();
 }
 
-// 5. Очистка всей корзины (Маршрут: DELETE /cart/)
 async function clearCart() {
     if (!confirm("Clear your cart?")) return;
     const token = localStorage.getItem('token');
@@ -111,21 +106,21 @@ async function placeOrder() {
     const notes = document.getElementById('order-notes').value;
 
     try {
-        const res = await fetch('/orders/', { // Убедись, что путь совпадает с app.use в server.js
-            method: 'POST',
-            headers: { 
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify({ 
-                order_type: orderType, 
-                notes: notes 
-            })
-        });
+const res = await fetch('/orders', { 
+    method: 'POST',
+    headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json' 
+    },
+    body: JSON.stringify({ 
+        order_type: orderType, 
+        notes: notes 
+    })
+});
 
         if (res.ok) {
-            alert("Order placed successfully! ☕");
-            window.location.href = '/orders'; // Перенаправляем на страницу истории заказов
+            alert("Order placed successfully!");
+            window.location.href = '/orders'; 
         } else {
             const err = await res.json();
             alert(err.message || "Failed to place order");
