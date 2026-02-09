@@ -1,6 +1,6 @@
 async function fetchAdminOrders() {
     const token = localStorage.getItem('token');
-    const res = await fetch('/orders/list', {
+    const res = await fetch('/admin/orders', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     const orders = await res.json();

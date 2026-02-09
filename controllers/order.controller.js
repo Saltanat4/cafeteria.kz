@@ -1,6 +1,7 @@
 const Order = require('../models/order.model')
 const OrderItem = require('../models/orderItem.model')
 const Product = require('../models/product.model')
+const CartItem = require('../models/cartItem.model')
 const mongoose = require('mongoose')
 
 exports.getAllOrders = async (req, res) => {
@@ -43,85 +44,82 @@ exports.getOrderByID = async (req, res) => {
 	}
 }
 
+
 exports.createOrder = async (req, res) => {
 	try {
-		if (!req.user?.id) return res.status(401).json({ message: 'Unauthorized' })
+		if (!req.user?.id) {
+		return res.status(401).json({ message: 'Unauthorized' })
+		}
 
-		const { order_type, delivery_address, notes, items } = req.body || {}
+		const { order_type, delivery_address, notes } = req.body || {}
 
-		if (!order_type) return res.status(400).json({ message: 'order_type required' })
+		if (!order_type) {
+		return res.status(400).json({ message: 'order_type required' })
+		}
+
 		if (!['pickup', 'delivery'].includes(order_type)) {
 		return res.status(400).json({ message: 'Invalid order_type' })
 		}
+
 		if (order_type === 'delivery' && !delivery_address) {
 		return res.status(400).json({ message: 'delivery_address required for delivery' })
 		}
 
-		if (!Array.isArray(items) || items.length === 0) {
-		return res.status(400).json({ message: 'items array required' })
+		// 1. Берём корзину пользователя
+		const cartItems = await CartItem
+		.find({ user: req.user.id })
+		.populate('product')
+
+		if (!cartItems.length) {
+		return res.status(400).json({ message: 'Cart is empty' })
 		}
 
-		const productIds = []
-		for (const it of items) {
-		if (!it.product || !mongoose.Types.ObjectId.isValid(it.product)) {
-			return res.status(400).json({ message: 'Invalid product id in items' })
-		}
-		const q = Number(it.quantity)
-		if (!Number.isFinite(q) || q < 1) {
-			return res.status(400).json({ message: 'quantity must be >= 1' })
-		}
-		productIds.push(it.product)
-		}
+		// 2. Формируем orderItems
+		const orderItemsDocs = cartItems.map(ci => {
+		const quantity = Number(ci.quantity)
+		const unit_price = Number(ci.product.price)
 
-		const products = await Product.find({ _id: { $in: productIds } })
-
-		const productMap = new Map(products.map(p => [p._id.toString(), p]))
-
-		for (const pid of productIds) {
-		if (!productMap.has(pid.toString())) {
-			return res.status(400).json({ message: `Product not found: ${pid}` })
+		return {
+			product: ci.product._id,
+			product_name: ci.product.name,
+			quantity,
+			unit_price,
+			subtotal: quantity * unit_price
 		}
-		}
+		})
 
+		const total_amount = orderItemsDocs.reduce((sum, it) => sum + it.subtotal, 0)
+
+		// 3. Создаём заказ
 		const order = await Order.create({
 		user: req.user.id,
 		status: 'pending',
-		total_amount: 0,
+		total_amount,
 		order_type,
 		delivery_address: order_type === 'delivery' ? delivery_address : '',
 		notes: notes || ''
 		})
 
-		const orderItemsDocs = items.map((it) => {
-		const p = productMap.get(it.product.toString())
-		const quantity = Number(it.quantity)
-		const unit_price = Number(p.price)
-		const subtotal = quantity * unit_price
+		// 4. Сохраняем orderItems
+		const orderItemsWithOrder = orderItemsDocs.map(d => ({
+		...d,
+		order: order._id
+		}))
 
-		return {
-			order: order._id,
-			product: p._id,
-			product_name: p.name,
-			quantity,
-			unit_price,
-			subtotal
-		}
-		})
+		const createdItems = await OrderItem.insertMany(orderItemsWithOrder)
 
-		const createdItems = await OrderItem.insertMany(orderItemsDocs)
-
-		const total_amount = createdItems.reduce((sum, i) => sum + i.subtotal, 0)
-		order.total_amount = total_amount
-		await order.save()
+		// 5. Чистим корзину
+		await CartItem.deleteMany({ user: req.user.id })
 
 		return res.status(201).json({
 		message: 'Order created',
 		order,
 		items: createdItems
 		})
+
 	} catch (error) {
 		console.error(error)
-		return res.status(500).json({ message: error.message })
+		return res.status(500).json({ message: 'Internal Server Error' })
 	}
 }
 
