@@ -45,7 +45,6 @@ function renderMenu(products) {
 
     try {
         menuContainer.innerHTML = "";
-
         menuContainer.innerHTML = products.map(item => `
             <div class="product-card">
                 <div class="product-image">
@@ -108,7 +107,7 @@ function setupEventListeners() {
     }
 }
 
-async function addToCart(productId) {
+async function addToCart(product) {
     const token = localStorage.getItem('token');
     if (!token) {
         alert("Please login first!");
@@ -123,7 +122,7 @@ async function addToCart(productId) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` 
             },
-            body: JSON.stringify({ productId, quantity: 1 })
+            body: JSON.stringify({ product, quantity: 1 })
         });
 
         if (response.ok) {
