@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    const loginLink = document.getElementById('nav-login');
+    const logoutLink = document.getElementById('nav-logout');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (token) {
+        // Если залогинен: прячем Login, показываем Logout
+        if (loginLink) loginLink.style.display = 'none';
+        if (logoutLink) logoutLink.style.display = 'block';
+    } else {
+        // Если не залогинен: показываем Login, прячем Logout
+        if (loginLink) loginLink.style.display = 'block';
+        if (logoutLink) logoutLink.style.display = 'none';
+    }
+
+    // Логика выхода
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('userRole');
+            window.location.href = '/'; // Перенаправляем на главную
+        });
+    }
     fetchCartItems();
 });
 

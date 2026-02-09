@@ -1,7 +1,7 @@
 const Order = require('../models/order.model');
 const OrderItem = require('../models/orderItem.model');
 const Product = require('../models/product.model');
-const CartItem = require('../models/cartItem.model'); // ВОТ ЭТОЙ СТРОКИ НЕ ХВАТАЛО
+const CartItem = require('../models/cartItem.model');
 const mongoose = require('mongoose');
 
 exports.getAllOrders = async (req, res) => {
@@ -46,6 +46,7 @@ exports.getOrderByID = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 exports.createOrder = async (req, res) => {
     const session = await mongoose.startSession();
