@@ -94,7 +94,7 @@ if (addProductForm) {
             image_url: formData.get('image_url') || 'images/default.jpg'
         };
 
-        const url = editId ? `/products/${editId}` : '/products';
+        const url = editId ? `api/products/${editId}` : 'api/products';
         const method = editId ? 'PUT' : 'POST';
 
         try {
@@ -124,7 +124,7 @@ async function deleteProduct(productId) {
     if (!confirm("Are you sure you want to delete this item?")) return;
 
     try {
-        const res = await fetch(`/products/${productId}`, {
+        const res = await fetch(`api/products/${productId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
@@ -151,7 +151,7 @@ async function fetchAdminOrders() {
 
 async function fetchAdminProducts() {
     try {
-        const response = await fetch('/products'); 
+        const response = await fetch('api/products'); 
         const products = await response.json();
         renderAdminTable(products);
     } catch (err) { console.error(err); }
