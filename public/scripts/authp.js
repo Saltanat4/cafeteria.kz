@@ -51,7 +51,7 @@ loginForm.addEventListener('submit', async (e) => {
     if (res.ok) {
         localStorage.setItem('token', result.token);
         localStorage.setItem('userRole', result.user.role);
-        window.location.href = result.user.role === 'admin' ? '/admin.html' : '/index.html';
+        window.location.href = result.user.role === 'admin' ? '/admin' : '/';
     } else {
         alert(result.message);
     }
