@@ -22,16 +22,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.use('/auth' , authenticationRoutes)
-app.use('/user' , userRoutes)
-app.use('/products' , productRoutes)
-app.use('/cart' , cartRoutes)
-app.use('/orders' , orderRoutes)
+app.use('/api/auth' , authenticationRoutes)
+app.use('/api/user' , userRoutes)
+app.use('/api/products' , productRoutes)
+app.use('/api/cart' , cartRoutes)
+app.use('/api/orders' , orderRoutes)
 app.use('/api/admin' , adminRoutes)
 app.use('/' , pageRoutes)
 
 connectDB()
 
-app.listen(PORT , () => {
+app.listen(PORT , '0.0.0.0' , () => {
 	console.log(`http://localhost:${PORT}`);
 })

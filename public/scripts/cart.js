@@ -28,13 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchCartItems() {
     const token = localStorage.getItem('token');
+    console.log(token);
+    
     if (!token) {
         window.location.href = '/auth';
         return;
     }
 
     try {
-        const response = await fetch('/cart/list', {
+        console.log(1)
+        const response = await fetch('api/cart/', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -93,7 +96,7 @@ function renderCart(items) {
 async function removeItem(itemId) {
     if (!confirm("Remove this item?")) return;
     const token = localStorage.getItem('token');
-    const response = await fetch(`/cart/${itemId}`, {
+    const response = await fetch(`api/cart/${itemId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -103,7 +106,7 @@ async function removeItem(itemId) {
 async function updateQuantity(itemId, newQuantity) {
     if (newQuantity < 1) return;
     const token = localStorage.getItem('token');
-    const response = await fetch(`/cart/${itemId}`, {
+    const response = await fetch(`api/cart/${itemId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -117,7 +120,7 @@ async function updateQuantity(itemId, newQuantity) {
 async function clearCart() {
     if (!confirm("Clear your cart?")) return;
     const token = localStorage.getItem('token');
-    const response = await fetch('/cart/', {
+    const response = await fetch('api/cart/', {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -130,7 +133,7 @@ async function placeOrder() {
     const notes = document.getElementById('order-notes').value;
 
     try {
-const res = await fetch('/orders', { 
+const res = await fetch('api/orders', { 
     method: 'POST',
     headers: { 
         'Authorization': `Bearer ${token}`,

@@ -9,22 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
     <header>
-        <nav class="navbar">
-            <div class="logo">Cafeteria</div>
-            <ul class="nav-links">
-                <li><a href="/">Menu</a></li>
-                <li id="admin-link-item" style="display: none;"><a href="/admin">Admin Panel</a></li>
-<li id="nav-login"><a href="/login.html">Login</a></li>
-        <li id="nav-logout" style="display:none;"><a href="#" id="logout-btn">Logout</a></li>                <li class="cart-container">
-                    <a href="/cart" class="active">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span id="cart-count">0</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <div id="navbar"></div>
     </header>
 
     <main class="cart-wrapper">
@@ -66,6 +52,8 @@
         </div>
     </main>
 
+    <script src="/scripts/navbar.js"></script>
     <script src="/scripts/cart.js"></script>
+    <script src="/scripts/app.js"></script>
 </body>
 </html>

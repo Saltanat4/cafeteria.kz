@@ -25,7 +25,16 @@ body {
     z-index: 1000;
 }
 
-.logo { font-size: 1.6rem; font-weight: bold; }
+#logo 
+{ 
+    font-size: 1.6rem; 
+    font-weight: bold; 
+}
+
+#logo a{
+    text-decoration: none;
+    color: inherit; 
+}
 
 .search-bar input {
     padding: 8px 12px;

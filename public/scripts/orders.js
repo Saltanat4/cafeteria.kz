@@ -12,7 +12,7 @@ async function fetchMyOrders() {
     }
 
     try {
-        const res = await fetch('/orders/list', {
+        const res = await fetch('api/orders/', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

@@ -2,11 +2,14 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/cart.controller');
 const auth = require('../middlewares/auth');
+const isUser = require('../middlewares/isUser');
 
-router.get('/list', auth, controller.getAllItems);
-router.post('/', auth, controller.addItem);
-router.put('/:id', auth, controller.updateItemQuantity);
-router.delete('/:id', auth, controller.removeItem);
-router.delete('/', auth, controller.clearCart);
+router.use(auth , isUser);
+
+router.get('/', controller.getAllItems);
+router.post('/', controller.addItem);
+router.put('/:id', controller.updateItemQuantity);
+router.delete('/:id', controller.removeItem);
+router.delete('/', controller.clearCart);
 
 module.exports = router

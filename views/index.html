@@ -10,26 +10,7 @@
 <body>
 
 <header>
-    <nav class="navbar">
-        <div class="logo">Cafeteria</div>
-
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search menu...">
-            <button id="search-btn"><i class="fas fa-search"></i></button>
-        </div>
-
-        <ul class="nav-links">
-            <li><a href="/">Menu</a></li>
-            <li id="admin-link-item" style="display: none;"><a href="/admin">Admin Panel</a></li>
-            <li id="auth-link-item"><a href="/auth">Login</a></li>
-            <li class="cart-container">
-                <a href="/cart">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span id="cart-count">0</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <div id="navbar"></div>
 </header>
 
 <section class="filters">
@@ -50,6 +31,7 @@
     <p>&copy; 2026 Cafeteria | Created by Erkhan P., Saltanat B., and Shinaray N.</p>
 </footer>
 
+<script src="/scripts/navbar.js"></script>
 <script src="/scripts/app.js"></script>
 </body>
 </html>

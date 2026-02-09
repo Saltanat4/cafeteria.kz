@@ -21,7 +21,7 @@ registerForm.addEventListener('submit', async (e) => {
     const formData = new FormData(registerForm);
     const data = Object.fromEntries(formData);
 
-    const res = await fetch('/auth/register', {
+    const res = await fetch('api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -41,7 +41,7 @@ loginForm.addEventListener('submit', async (e) => {
     const formData = new FormData(loginForm);
     const data = Object.fromEntries(formData);
 
-    const res = await fetch('/auth/login', {
+    const res = await fetch('api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

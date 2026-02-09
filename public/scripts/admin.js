@@ -208,6 +208,7 @@ function renderAdminTable(products) {
                 `).join('')}
             </tbody>
         </table>
+        </table>
     `;
 }
 

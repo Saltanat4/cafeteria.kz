@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchProducts() {
     const menuContainer = document.getElementById('menu-container');
     try {
-        const response = await fetch('/products');
+        const response = await fetch('api/products');
         if (!response.ok) throw new Error(`Server error: ${response.status}`);
         
         allProducts = await response.json();
@@ -32,6 +32,8 @@ function renderMenu(products) {
     const menuContainer = document.getElementById('menu-container');
     if (!menuContainer) return;
 
+    const userRole = localStorage.getItem('userRole'); 
+
     menuContainer.innerHTML = products.map(item => `
         <div class="product-card">
             <div class="product-image">
@@ -41,9 +43,13 @@ function renderMenu(products) {
                 <span class="category-tag">${item.category}</span>
                 <h3>${item.name}</h3>
                 <p class="price">${item.price} ₸</p>
-                <button class="add-btn" onclick="addToCart('${item._id}')">
-                    <i class="fas fa-plus"></i> Add to Cart
-                </button>
+
+                ${userRole !== 'admin' ? `
+                    <button class="add-btn" onclick="addToCart('${item._id}')">
+                        <i class="fas fa-plus"></i> Add to Cart
+                    </button>
+                ` : ``}
+
             </div>
         </div>
     `).join('');
@@ -103,7 +109,7 @@ async function addToCart(product) {
         return;
     }
     try {
-        const response = await fetch('/cart', {
+        const response = await fetch('api/cart', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -141,7 +147,7 @@ async function updateNavbarUI() {
 
 async function fetchCartCount(token, element) {
     try {
-        const res = await fetch('/cart/list', {
+        const res = await fetch('api/cart/', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
