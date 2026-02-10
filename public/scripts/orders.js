@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchMyOrders();
 });
 
+const token = localStorage.getItem('token');
+const container = document.getElementById('user-orders-container');
+
 async function fetchMyOrders() {
-    const token = localStorage.getItem('token');
-    const container = document.getElementById('user-orders-container');
+
 
     if (!token) {
         container.innerHTML = '<p>Please <a href="/auth">login</a> to see your orders.</p>';
@@ -41,30 +43,98 @@ async function fetchMyOrders() {
 }
 
 function renderOrders(orders, container) {
-    container.innerHTML = orders.map(order => `
+    container.innerHTML = orders.map(order => {
+        const items = Array.isArray(order.items) ? order.items : [];
+
+        const isDelivery = order.order_type === 'delivery';
+        const address = (order.delivery_address || '').trim();
+        const notes = (order.notes || '').trim();
+
+        const cancellableStatuses = ['pending', 'new', 'processing'];
+        const canCancel = cancellableStatuses.includes(String(order.status || '').toLowerCase());
+
+        return `
         <div class="order-card">
             <div class="order-header">
-                <h3>Order #${order._id.slice(-5)}</h3>
-                <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+            <h3>Order #${String(order._id).slice(-5)}</h3>
+            <span class="status-badge ${order.status}">
+                ${String(order.status || '').toUpperCase()}
+            </span>
             </div>
-            
+
             <div class="order-info">
-                <p><strong>Type:</strong> ${order.order_type === 'delivery' ? '🚗 Delivery' : '🥡 Pickup'}</p>
-                <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</p>
+            <p><strong>Type:</strong> ${isDelivery ? '🚗 Delivery' : '🥡 Pickup'}</p>
+
+            ${isDelivery ? `
+                <p><strong>Address:</strong> ${address ? address : '<em>Not provided</em>'}</p>
+            ` : ''}
+
+            ${notes ? `
+                <p><strong>Notes:</strong> ${notes}</p>
+            ` : ''}
+
+            <p><strong>Date:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleString() : '-'}</p>
             </div>
 
             <div class="order-items">
-                ${order.items.map(item => `
-                    <div class="item-row">
-                        <span>${item.product_name} x${item.quantity}</span>
-                        <span>${item.subtotal} ₸</span>
-                    </div>
-                `).join('')}
+            ${items.length ? items.map(item => `
+                <div class="item-row">
+                <span>${item.product_name} x${item.quantity}</span>
+                <span>${item.subtotal} ₸</span>
+                </div>
+            `).join('') : `<p class="empty-msg">No items</p>`}
             </div>
 
             <div class="order-footer">
-                <div class="total">Total: ${order.total_amount} ₸</div>
+            <div class="total">Total: ${order.total_amount} ₸</div>
+
+            ${canCancel ? `
+                <button class="btn-cancel" data-order-id="${order._id}" type="button">
+                ❌ Cancel order
+                </button>
+            ` : ''}
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
+
+container.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-cancel');
+    if (!btn) return;
+
+    const orderId = btn.dataset.orderId;
+    console.log(orderId)
+    const ok = confirm('Are you sure you want to cancel this order?');
+    if (!ok) return;
+
+    btn.disabled = true;
+    const oldText = btn.textContent;
+    btn.textContent = 'Cancelling...';
+
+    try {
+        const res = await fetch(`api/orders/${orderId}`, {  // <-- без leading "/"
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'             // <-- ВАЖНО
+        },
+        body: JSON.stringify({ status: 'cancelled' })     // <-- ок
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || 'Failed to cancel');
+
+        const card = btn.closest('.order-card');
+        const statusBadge = card.querySelector('.status-badge');
+
+        statusBadge.className = `status-badge ${data.status}`;
+        statusBadge.textContent = String(data.status).toUpperCase();
+
+        btn.remove();
+    } catch (err) {
+        alert(err.message);
+        btn.disabled = false;
+        btn.textContent = oldText || '❌ Cancel order';
+    }
+});

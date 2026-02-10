@@ -10,7 +10,6 @@ exports.getAllOrders = async (req, res) => {
 
         const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 }).lean();
 
-        // Чтобы на фронтенде сразу были видны товары, добавим их к заказам
         const ordersWithItems = await Promise.all(orders.map(async (order) => {
             const items = await OrderItem.find({ order: order._id }).populate('product');
             return { ...order, items };
@@ -54,11 +53,10 @@ exports.createOrder = async (req, res) => {
     try {
         const { order_type, delivery_address, notes } = req.body;
         
-        // Теперь CartItem определен!
         const cartItems = await CartItem.find({ user: req.user.id }).populate('product').session(session);
 
         if (!cartItems || cartItems.length === 0) {
-            throw new Error('Ваша корзина пуста');
+            throw new Error('Cart is Empty');
         }
 
         let totalAmount = 0;
@@ -92,7 +90,6 @@ exports.createOrder = async (req, res) => {
         newOrder.total_amount = totalAmount;
         await newOrder.save({ session });
 
-        // Очищаем корзину после успешного создания заказа
         await CartItem.deleteMany({ user: req.user.id }).session(session);
 
         await session.commitTransaction();
@@ -116,7 +113,14 @@ exports.updateOrder = async (req, res) => {
 
         const update = {};
         if (req.body.notes) update.notes = req.body.notes;
-        if (req.body.status === 'cancelled') update.status = 'cancelled';
+        
+        if (req.body.status === 'cancelled') {
+            const notCancellable = ['completed', 'cancelled'];
+            if (notCancellable.includes(order.status)) {
+                return res.status(400).json({ message: 'Order cannot be cancelled' });
+            }
+            update.status = 'cancelled';
+        }
 
         const updated = await Order.findByIdAndUpdate(id, update, { new: true });
         res.json(updated);
