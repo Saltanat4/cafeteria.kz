@@ -9,6 +9,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.6",
     "node.js": "^0.0.1-security",
+    "nodemailer": "^8.0.1",
     "nodemon": "^3.1.11"
   },
   "name": "cafeteria.kz",

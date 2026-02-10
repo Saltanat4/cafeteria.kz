@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const asyncHandler = require("../middlewares/asyncHandler");
+const { sendWelcomeEmail } = require("../config/mailer");
 
 const signToken = (user) => {
     return jwt.sign(
@@ -26,6 +27,10 @@ exports.register = asyncHandler(async (req, res) => {
         username,
         email,
         password: hashed,
+    });
+
+    sendWelcomeEmail(user.email, user.username).catch((e) => {
+        console.error("Welcome email failed:", e.message);
     });
 
     res.status(201).json({
