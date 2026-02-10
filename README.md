@@ -195,9 +195,8 @@ Admin interface for managing users and orders.
 The project is deployed using a cloud platform such as Render or Railway.
 
 Live URL:
-```
+
 # [Cafeteria.kz](https://cafeteria-kz.onrender.com)
-```
 
 ---
 
