@@ -55,6 +55,7 @@ cd cafeteria.kz
 ```bash
 npm install
 ```
+The project uses MongoDB Atlas as a cloud database (local MongoDB is not used).
 
 ### 3. Environment variables
 Create a `.env` file in the root directory:
@@ -174,35 +175,6 @@ After successful registration, the system sends a welcome email to the user.
 ## Screenshots
 
 ### Home Page
-Main page displaying available products.
-
-### Authentication Page
-Login and registration form with client-side validation.
-
-### Cart Page
-Shopping cart with product quantity controls.
-
-### Orders Page
-User order history and order details.
-
-### Admin Panel
-Admin interface for managing users and orders.
-
----
-
-## Deployment
-
-The project is deployed using a cloud platform such as Render or Railway.
-
-Live URL:
-
-# [Cafeteria.kz](https://cafeteria-kz.onrender.com)
-
----
-
-## Screenshots
-
-### Home Page
 ![Home](screenshots/home.png)
 Home page displaying available products.
 
@@ -221,6 +193,18 @@ User order history with order status tracking.
 ### Admin Panel
 ![Admin](screenshots/admin.png)
 Admin panel for managing orders and users.
+
+---
+
+## Deployment
+
+The project is deployed using a cloud platform such as Render or Railway.
+
+Live URL:
+
+# [Cafeteria.kz](https://cafeteria-kz.onrender.com)
+
+---
 
 
 ## Conclusion
