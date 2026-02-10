@@ -1,15 +1,17 @@
-const express = require('express')
-const router = express.Router()
-const controller = require('../controllers/order.controller')
-const auth = require('../middlewares/auth')
-const isUser = require('../middlewares/isUser');
+const express = require("express");
+const router = express.Router();
 
-router.use(auth , isUser);
+const controller = require("../controllers/order.controller");
 
-router.get('/' , controller.getAllOrders)
-router.get('/:id/items' , controller.getOrderItems)
-router.get('/:id' , controller.getOrderByID)
-router.post('/' , controller.createOrder)
-router.put('/:id' , controller.updateOrder)
+const { protect } = require("../middlewares/auth");
+const { authorizeRoles } = require("../middlewares/authorize");
 
-module.exports = router
+router.use(protect, authorizeRoles("user", "admin"));
+
+router.get("/",controller.getAllOrders);
+router.get("/:id/items",controller.getOrderItems);
+router.get("/:id",controller.getOrderByID);
+router.post("/",controller.createOrder);
+router.put("/:id",controller.updateOrder);
+
+module.exports = router;

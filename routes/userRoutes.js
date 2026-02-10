@@ -1,8 +1,11 @@
-const router = require('express').Router()
-const controller = require('../controllers/user.controller')
-const auth = require('../middlewares/auth')
+const router = require("express").Router();
+const controller = require("../controllers/user.controller");
+const { protect } = require("../middlewares/auth");
+const validate = require("../middlewares/validate");
+const { updateUserSchema } = require("../validators/userSchemas");
 
-router.get('/me', auth, controller.getUser)
-router.put('/me', auth, controller.updateUser)
+router.get("/me", protect, controller.getUser);
 
-module.exports = router
+router.put("/me",protect,validate(updateUserSchema), controller.updateUser);
+
+module.exports = router;

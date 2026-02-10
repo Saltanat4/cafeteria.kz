@@ -1,18 +1,30 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
+const User = require("../models/user.model.js");
 
-module.exports = (req, res, next) => {
-	const header = req.headers.authorization
-	if (!header) return res.status(401).json({ message: 'No token' })
-
-	const [type, token] = header.split(' ')
-	if (type !== 'Bearer' || !token) {
-		return res.status(401).json({ message: 'Bad auth format' })
-	}
-
+async function protect(req, res, next) {
 	try {
-		req.user = jwt.verify(token, process.env.JWT_SECRET)
-		next()
-	} catch (e) {
-		return res.status(401).json({ message: 'Invalid token' })
+		const header = req.headers.authorization;
+
+		if (!header || !header.startsWith("Bearer ")) {
+		res.status(401);
+		throw new Error("Not authorized: no token");
+		}
+
+		const token = header.split(" ")[1];
+		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+		const user = await User.findById(decoded.id).select("-password");
+		if (!user) {
+		res.status(401);
+		throw new Error("Not authorized: user not found");
+		}
+
+		req.user = user;
+		next();
+	} catch (err) {
+		res.status(401);
+		next(err);
 	}
 }
+
+module.exports = { protect };

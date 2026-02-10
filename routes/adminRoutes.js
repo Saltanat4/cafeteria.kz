@@ -1,13 +1,14 @@
-const express = require('express')
-const router = express.Router()
-const controller = require('../controllers/admin.controller')
-const auth = require('../middlewares/auth')
-const isAdmin = require('../middlewares/isAdmin')
+const express = require("express");
+const router = express.Router();
 
-router.use(auth , isAdmin);
+const controller = require("../controllers/admin.controller");
 
-router.get('/orders' , controller.getAllOrders)
-router.get('/users', controller.getAllUsers)
-router.put('/orders/:id/status' , controller.updateOrder)
+const { protect } = require("../middlewares/auth");
+const { authorizeRoles } = require("../middlewares/authorize");
 
-module.exports = router
+router.use(protect, authorizeRoles("admin"));
+router.get("/orders",controller.getAllOrders);
+router.get("/users",controller.getAllUsers);
+router.put("/orders/:id/status",controller.updateOrder);
+
+module.exports = router;

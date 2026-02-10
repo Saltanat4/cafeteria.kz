@@ -13,13 +13,15 @@ const orderRoutes = require('./routes/orderRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const pageRoutes = require('./routes/pageRoutes')
 
+const {notFound , errorHandler} = require('./middlewares/errorHandler');
+
 const PORT = process.env.PORT || 3000
 
 app.use(cors());
 app.use(express.json()); 
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, 'views')));
 
 
 app.use('/api/auth' , authenticationRoutes)
@@ -29,6 +31,9 @@ app.use('/api/cart' , cartRoutes)
 app.use('/api/orders' , orderRoutes)
 app.use('/api/admin' , adminRoutes)
 app.use('/' , pageRoutes)
+
+app.use(notFound)
+app.use(errorHandler)
 
 connectDB()
 
