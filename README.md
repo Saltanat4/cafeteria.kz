@@ -47,7 +47,7 @@ The application provides the following features:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/cafeteria.kz.git
+git clone https://github.com/Saltanat4/cafeteria.kz.git
 cd cafeteria.kz
 ```
 
