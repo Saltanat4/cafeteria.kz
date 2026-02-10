@@ -50,7 +50,7 @@ function renderOrders(orders, container) {
         const address = (order.delivery_address || '').trim();
         const notes = (order.notes || '').trim();
 
-        const cancellableStatuses = ['pending', 'new', 'processing'];
+        const cancellableStatuses = ['pending', 'preparing', 'ready'];
         const canCancel = cancellableStatuses.includes(String(order.status || '').toLowerCase());
 
         return `
@@ -90,7 +90,7 @@ function renderOrders(orders, container) {
 
             ${canCancel ? `
                 <button class="btn-cancel" data-order-id="${order._id}" type="button">
-                ❌ Cancel order
+                    Cancel order
                 </button>
             ` : ''}
             </div>
@@ -113,13 +113,13 @@ container.addEventListener('click', async (e) => {
     btn.textContent = 'Cancelling...';
 
     try {
-        const res = await fetch(`api/orders/${orderId}`, {  // <-- без leading "/"
+        const res = await fetch(`api/orders/${orderId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'             // <-- ВАЖНО
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status: 'cancelled' })     // <-- ок
+        body: JSON.stringify({ status: 'cancelled' })
         });
 
         const data = await res.json().catch(() => ({}));
@@ -135,6 +135,6 @@ container.addEventListener('click', async (e) => {
     } catch (err) {
         alert(err.message);
         btn.disabled = false;
-        btn.textContent = oldText || '❌ Cancel order';
+        btn.textContent = oldText || 'Cancel order';
     }
 });

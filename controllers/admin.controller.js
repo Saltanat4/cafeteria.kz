@@ -30,29 +30,43 @@ exports.updateOrder = async (req, res) => {
 		}
 
 		const allowedStatuses = ['pending', 'preparing', 'ready', 'completed', 'cancelled']
-		if (!status || !allowedStatuses.includes(status)) {
-		return res.status(400).json({ message: 'Invalid status' })
+			if (!status || !allowedStatuses.includes(status)) {
+			return res.status(400).json({ message: 'Invalid status' })
+		}
+
+		const order = await Order.findById(id).select('status')
+			if (!order) {
+			return res.status(404).json({ message: 'Order not found' })
+		}
+
+		if (order.status === 'cancelled') {
+			return res.status(400).json({ message: 'Cancelled order cannot be updated' })
+		}
+
+		if (order.status === 'completed') {
+			return res.status(400).json({ message: 'Completed order cannot be updated' })
+		}
+
+		if (order.status === status) {
+			return res.status(200).json({ message: 'No changes', order })
 		}
 
 		const updated = await Order.findByIdAndUpdate(
-		id,
-		{ status },
-		{ new: true, runValidators: true }
+			id,
+			{ status },
+			{ new: true, runValidators: true }
 		).populate('user', 'username email role')
 
-		if (!updated) {
-		return res.status(404).json({ message: 'Order not found' })
-		}
-
 		return res.json({
-		message: 'Order status updated',
-		order: updated
+			message: 'Order status updated',
+			order: updated
 		})
 	} catch (error) {
 		console.error(error)
 		return res.status(500).json({ message: error.message })
 	}
 }
+
 
 exports.getAllUsers = async (req, res) => {
 	try {

@@ -160,23 +160,37 @@ async function fetchAdminProducts() {
 function renderAdminOrders(orders) {
     const tbody = document.getElementById('admin-orders-body');
     if (!tbody) return;
-    tbody.innerHTML = orders.map(order => `
+
+    tbody.innerHTML = orders.map(order => {
+        const isFinal = order.status === 'cancelled' || order.status === 'completed';
+
+        const statusCell = isFinal
+        ? `<span class="status-final ${order.status}">
+                ${order.status === 'cancelled' ? '❌ Cancelled' : '✅ Completed'}
+            </span>`
+        : `
+            <select onchange="updateStatus('${order._id}', this.value)" class="status-select">
+            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
+            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
+            <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+        `;
+
+        return `
         <tr>
             <td>#${order._id.slice(-5)}</td>
             <td>${order.user?.username || 'Guest'}</td>
             <td>${order.total_amount} ₸</td>
-            <td>
-                <select onchange="updateStatus('${order._id}', this.value)" class="status-select">
-                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                    <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
-                    <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
-                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
-                </select>
-            </td>
+            <td>${statusCell}</td>
             <td>${new Date(order.createdAt).toLocaleDateString()}</td>
         </tr>
-    `).join('');
+        `;
+    }).join('');
 }
+
+
 
 function renderAdminTable(products) {
     const tableContainer = document.getElementById('admin-table-container');
@@ -213,15 +227,40 @@ function renderAdminTable(products) {
 }
 
 async function updateStatus(orderId, newStatus) {
+    const token = localStorage.getItem('token');
+
+    const critical = ['completed', 'cancelled'];
+    if (critical.includes(newStatus)) {
+        const ok = confirm(`Are you sure you want to mark this order as "${newStatus}"?`);
+        if (!ok) {
+            await fetchAdminOrders();
+            return;
+        }
+    }
+
     try {
-        await fetch(`/api/admin/orders/${orderId}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({ status: newStatus })
+        const res = await fetch(`/api/admin/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
         });
-        alert("Status updated!");
-    } catch (err) { alert("Update failed"); }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+        alert(data.message || 'Cannot change status');
+        await fetchAdminOrders();
+        return;
+        }
+
+        alert(data.message || 'Status updated');
+        await fetchAdminOrders();
+
+    } catch (err) {
+        alert('Update failed');
+        await fetchAdminOrders();
+    }
 }
