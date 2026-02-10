@@ -196,7 +196,7 @@ The project is deployed using a cloud platform such as Render or Railway.
 
 Live URL:
 ```
-https://your-deployed-app-url
+[(https://cafeteria-kz.onrender.com)]
 ```
 
 ---
