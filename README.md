@@ -200,6 +200,29 @@ Live URL:
 
 ---
 
+## Screenshots
+
+### Home Page
+![Home](screenshots/home.png)
+Home page displaying available products.
+
+### Authentication Page
+![Auth](screenshots/auth.png)
+Authentication page with login and registration forms.
+
+### Cart Page
+![Cart](screenshots/cart.png)
+Shopping cart with selected products and quantity controls.
+
+### Orders Page
+![Orders](screenshots/orders.png)
+User order history with order status tracking.
+
+### Admin Panel
+![Admin](screenshots/admin.png)
+Admin panel for managing orders and users.
+
+
 ## Conclusion
 
 Cafeteria.kz demonstrates a complete web application with authentication, authorization,
