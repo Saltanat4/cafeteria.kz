@@ -1,131 +1,125 @@
-const CartItem = require('../models/cartItem.model')
-const Product = require('../models/product.model')
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+const CartItem = require("../models/cartItem.model");
+const Product = require("../models/product.model");
+const asyncHandler = require("../middlewares/asyncHandler");
 
-exports.getAllItems = async (req, res) => {
-	try {
-		if (!req.user?.id) return res.status(401).json({ message: 'Unauthorized' })
+exports.getAllItems = asyncHandler(async (req, res) => {
+	const userId = req.user._id || req.user.id;
 
-		const items = await CartItem.find({ user: req.user.id })
-		.populate('product') 
-		.sort({ createdAt: -1 })
+	const items = await CartItem.find({ user: userId })
+		.populate("product")
+		.sort({ createdAt: -1 });
 
-		return res.json(items)
-	} catch (error) {
-		console.error(error)
-		return res.status(500).json({ message: error.message })
+	res.json(items);
+});
+
+exports.addItem = asyncHandler(async (req, res) => {
+	const userId = req.user._id || req.user.id;
+
+	const { product, quantity } = req.body || {};
+
+	if (!product || !mongoose.Types.ObjectId.isValid(product)) {
+		res.status(400);
+		throw new Error("Invalid product id");
 	}
-}
 
-exports.addItem = async (req, res) => {
-	try {
-		if (!req.user?.id) return res.status(401).json({ message: 'Unauthorized' })
+	const qty = Number(quantity ?? 1);
+	if (!Number.isFinite(qty) || qty < 1) {
+		res.status(400);
+		throw new Error("quantity must be >= 1");
+	}
 
-		const { product, quantity } = req.body || {}
+	const p = await Product.findById(product);
+	if (!p) {
+		res.status(404);
+		throw new Error("Product not found");
+	}
 
-		if (!product || !mongoose.Types.ObjectId.isValid(product)) {
-		return res.status(400).json({ message: 'Invalid product id' })
-		}
+	if (p.is_available === false) {
+		res.status(400);
+		throw new Error("Product is not available");
+	}
 
-		const qty = Number(quantity ?? 1)
-		if (!Number.isFinite(qty) || qty < 1) {
-		return res.status(400).json({ message: 'quantity must be >= 1' })
-		}
+	const existing = await CartItem.findOne({ user: userId, product });
 
-		const p = await Product.findById(product)
-		if (!p) return res.status(404).json({ message: 'Product not found' })
-		if (p.is_available === false) {
-		return res.status(400).json({ message: 'Product is not available' })
-		}
+	if (existing) {
+		existing.quantity += qty;
+		await existing.save();
 
-		const existing = await CartItem.findOne({ user: req.user.id, product })
-		if (existing) {
-		existing.quantity += qty
-		await existing.save()
-
-		const updated = await CartItem.findById(existing._id).populate('product')
+		const updated = await CartItem.findById(existing._id).populate("product");
 		return res.status(200).json({
-			message: 'Cart item quantity increased',
-			item: updated
-		})
-		}
-
-		const item = await CartItem.create({
-		user: req.user.id,
-		product,
-		quantity: qty
-		})
-
-		const full = await CartItem.findById(item._id).populate('product')
-		return res.status(201).json({
-		message: 'Item added to cart',
-		item: full
-		})
-	} catch (error) {
-		console.error(error)
-		return res.status(500).json({ message: error.message })
+		message: "Cart item quantity increased",
+		item: updated,
+		});
 	}
-}
 
-exports.updateItemQuantity = async (req, res) => {
-	try {
-		if (!req.user?.id) return res.status(401).json({ message: 'Unauthorized' })
+	const item = await CartItem.create({
+		user: userId,
+		product,
+		quantity: qty,
+	});
 
-		const { id } = req.params
-		if (!mongoose.Types.ObjectId.isValid(id)) {
-		return res.status(400).json({ message: 'Invalid cart item id' })
-		}
+	const full = await CartItem.findById(item._id).populate("product");
+	res.status(201).json({
+		message: "Item added to cart",
+		item: full,
+	});
+	});
 
-		const qty = Number(req.body?.quantity)
-		if (!Number.isFinite(qty) || qty < 1) {
-		return res.status(400).json({ message: 'quantity must be >= 1' })
-		}
+	exports.updateItemQuantity = asyncHandler(async (req, res) => {
+	const userId = req.user._id || req.user.id;
 
-		const updated = await CartItem.findOneAndUpdate(
-		{ _id: id, user: req.user.id },
+	const { id } = req.params;
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		res.status(400);
+		throw new Error("Invalid cart item id");
+	}
+
+	const qty = Number(req.body?.quantity);
+	if (!Number.isFinite(qty) || qty < 1) {
+		res.status(400);
+		throw new Error("quantity must be >= 1");
+	}
+
+	const updated = await CartItem.findOneAndUpdate(
+		{ _id: id, user: userId },
 		{ quantity: qty },
 		{ new: true, runValidators: true }
-		).populate('product')
+	).populate("product");
 
-		if (!updated) return res.status(404).json({ message: 'Cart item not found' })
-
-		return res.json({
-		message: 'Cart item updated',
-		item: updated
-		})
-	} catch (error) {
-		console.error(error)
-		return res.status(500).json({ message: error.message })
+	if (!updated) {
+		res.status(404);
+		throw new Error("Cart item not found");
 	}
-}
 
-exports.removeItem = async (req, res) => {
-	try {
-		if (!req.user?.id) return res.status(401).json({ message: 'Unauthorized' })
+	res.json({
+		message: "Cart item updated",
+		item: updated,
+	});
+});
 
-		const { id } = req.params
-		if (!mongoose.Types.ObjectId.isValid(id)) {
-		return res.status(400).json({ message: 'Invalid cart item id' })
-		}
+exports.removeItem = asyncHandler(async (req, res) => {
+	const userId = req.user._id || req.user.id;
 
-		const deleted = await CartItem.findOneAndDelete({ _id: id, user: req.user.id })
-		if (!deleted) return res.status(404).json({ message: 'Cart item not found' })
-
-		return res.json({ message: 'Item removed from cart' })
-	} catch (error) {
-		console.error(error)
-		return res.status(500).json({ message: error.message })
+	const { id } = req.params;
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		res.status(400);
+		throw new Error("Invalid cart item id");
 	}
-}
 
-exports.clearCart = async (req, res) => {
-	try {
-		if (!req.user?.id) return res.status(401).json({ message: 'Unauthorized' })
-
-		await CartItem.deleteMany({ user: req.user.id })
-		return res.json({ message: 'Cart cleared' })
-	} catch (error) {
-		console.error(error)
-		return res.status(500).json({ message: error.message })
+	const deleted = await CartItem.findOneAndDelete({ _id: id, user: userId });
+	if (!deleted) {
+		res.status(404);
+		throw new Error("Cart item not found");
 	}
-}
+
+	res.json({ message: "Item removed from cart" });
+});
+
+exports.clearCart = asyncHandler(async (req, res) => {
+	const userId = req.user._id || req.user.id;
+
+	await CartItem.deleteMany({ user: userId });
+
+	res.json({ message: "Cart cleared" });
+});

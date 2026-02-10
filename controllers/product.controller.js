@@ -1,120 +1,93 @@
-	const Product = require('../models/product.model')
-	const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+const Product = require("../models/product.model");
+const asyncHandler = require("../middlewares/asyncHandler");
 
-	exports.getAllProducts = async (req, res) => {
-	try {
-		const { category, available } = req.query
+exports.getAllProducts = asyncHandler(async (req, res) => {
+	const { category, available } = req.query;
+	const filter = {};
 
-		const filter = {}
+	if (category) filter.category = category;
 
-		if (category) {
-		filter.category = category
-		}
-
-		if (available !== undefined) {
-		filter.is_available = available === 'true'
-		}
-
-		const products = await Product.find(filter).sort({ createdAt: -1 })
-
-		res.json(products)
-	} catch (error) {
-		console.error(error)
-		res.status(500).json({ message: error.message })
-	}
+	if (available !== undefined) {
+		filter.is_available = available === "true";
 	}
 
-	exports.getProductByID = async (req, res) => {
-	try {
-		const { id } = req.params
+	const products = await Product.find(filter).sort({ createdAt: -1 });
+	res.json(products);
+});
 
-		if (!mongoose.Types.ObjectId.isValid(id)) {
-		return res.status(400).json({ message: 'Invalid product id' })
-		}
+exports.getProductByID = asyncHandler(async (req, res) => {
+	const { id } = req.params;
 
-		const product = await Product.findById(id)
-		if (!product) {
-		return res.status(404).json({ message: 'Product not found' })
-		}
-
-		res.json(product)
-	} catch (error) {
-		console.error(error)
-		res.status(500).json({ message: error.message })
-	}
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		res.status(400);
+		throw new Error("Invalid product id");
 	}
 
-	exports.createProduct = async (req, res) => {
-	try {
-		const { name, price, category } = req.body
+	const product = await Product.findById(id);
+	if (!product) {
+		res.status(404);
+		throw new Error("Product not found");
+	}
 
-		if (!name || price == null || !category) {
-		return res.status(400).json({
-			message: 'name, price, category required'
-		})
-		}
+	res.json(product);
+});
 
-		const product = await Product.create({
+exports.createProduct = asyncHandler(async (req, res) => {
+	const { name, price, category } = req.body;
+
+	if (!name || price == null || !category) {
+		res.status(400);
+		throw new Error("name, price, category required");
+	}
+
+	const product = await Product.create({
 		name,
-		description: req.body.description || '',
+		description: req.body.description || "",
 		price,
 		category,
-		image_url: req.body.image_url || '',
-		is_available: req.body.is_available ?? true
-		})
+		image_url: req.body.image_url || "",
+		is_available: req.body.is_available ?? true,
+	});
 
-		res.status(201).json(product)
-	} catch (error) {
-		console.error(error)
-		res.status(500).json({ message: error.message })
-	}
-	}
+	res.status(201).json(product);
+});
 
-	exports.updateProduct = async (req, res) => {
-	try {
-		const { id } = req.params
+exports.updateProduct = asyncHandler(async (req, res) => {
+	const { id } = req.params;
 
-		if (!mongoose.Types.ObjectId.isValid(id)) {
-		return res.status(400).json({ message: 'Invalid product id' })
-		}
-
-		const updated = await Product.findByIdAndUpdate(
-		id,
-		req.body,
-		{
-			new: true,
-			runValidators: true
-		}
-		)
-
-		if (!updated) {
-		return res.status(404).json({ message: 'Product not found' })
-		}
-
-		res.json(updated)
-	} catch (error) {
-		console.error(error)
-		res.status(500).json({ message: error.message })
-	}
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		res.status(400);
+		throw new Error("Invalid product id");
 	}
 
-	exports.deleteProduct = async (req, res) => {
-	try {
-		const { id } = req.params
+	const updated = await Product.findByIdAndUpdate(id, req.body, {
+		new: true,
+		runValidators: true,
+	});
 
-		if (!mongoose.Types.ObjectId.isValid(id)) {
-		return res.status(400).json({ message: 'Invalid product id' })
-		}
-
-		const deleted = await Product.findByIdAndDelete(id)
-
-		if (!deleted) {
-		return res.status(404).json({ message: 'Product not found' })
-		}
-
-		res.json({ message: 'Product deleted' })
-	} catch (error) {
-		console.error(error)
-		res.status(500).json({ message: error.message })
+	if (!updated) {
+		res.status(404);
+		throw new Error("Product not found");
 	}
+
+	res.json(updated);
+});
+
+exports.deleteProduct = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		res.status(400);
+		throw new Error("Invalid product id");
 	}
+
+	const deleted = await Product.findByIdAndDelete(id);
+
+	if (!deleted) {
+		res.status(404);
+		throw new Error("Product not found");
+	}
+
+	res.json({ message: "Product deleted" });
+});
